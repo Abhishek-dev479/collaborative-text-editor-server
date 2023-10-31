@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Editor  from './Editor';
-import './styles1.css';
+import './styles.css';
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import {v4 as uuid} from 'uuid';
 import Dialog from './Dialog';

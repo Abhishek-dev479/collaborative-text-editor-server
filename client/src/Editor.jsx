@@ -1,9 +1,9 @@
-// import react,{useCallback, useEffect, useRef, useState} from 'react';
-// import Quill from 'quill';
-// import "quill/dist/quill.snow.css";
-// import { io } from 'socket.io-client';
-// import {useParams, useLocation} from 'react-router-dom';
-// import Dialog from './Dialog';
+import react,{useCallback, useEffect, useRef, useState} from 'react';
+import Quill from 'quill';
+import "quill/dist/quill.snow.css";
+import { io } from 'socket.io-client';
+import {useParams, useLocation} from 'react-router-dom';
+import Dialog from './Dialog';
 // import save from './save.png';
 // import Sidebar from './Sidebar';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -165,11 +165,11 @@
 // export default Editor;
 
 
-import { useCallback, useEffect, useState } from "react"
-import Quill from "quill"
-import "quill/dist/quill.snow.css"
-import { io } from "socket.io-client"
-import { useParams } from "react-router-dom"
+// import { useCallback, useEffect, useState } from "react"
+// import Quill from "quill"
+// import "quill/dist/quill.snow.css"
+// import { io } from "socket.io-client"
+// import { useParams } from "react-router-dom"
 
 const SAVE_INTERVAL_MS = 2000
 const TOOLBAR_OPTIONS = [
@@ -188,6 +188,8 @@ export default function Editor() {
   const { id: documentId } = useParams()
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState()
+  let [dialog, setDialog] = useState([false, true]);
+  let [url, setUrl] = useState('http://localhost:3000'+useLocation().pathname);
 
 
   useEffect(() => {
@@ -264,10 +266,33 @@ export default function Editor() {
     q.disable()
     q.setText("Loading...")
     setQuill(q)
-  }, [])
-  return <div className="container" ref={wrapperRef}></div>
-}
 
-function createBranch(){
-  console.log('branch');
+    let k = document.getElementsByClassName('ql-toolbar')[0]; 
+    let button = createButton();
+    k.append(button)
+  }, [])
+
+  function createButton(){
+    let div =  document.createElement('button');
+    div.classList.add('ql-formats');
+    div.textContent = 'Share'
+    div.setAttribute('id', 'but');
+    div.addEventListener('click', () => {
+        setDialog([true, true]);
+        // saveDocument();
+    })
+    return div;
+  }
+
+  function removeDialog(){
+    setDialog([false, true]);
+  }
+
+  
+
+  return (
+  <div id="container" ref={wrapperRef}>
+      {dialog[0] && <Dialog share={dialog[1]} url={url} removeDialog={removeDialog}></Dialog>}
+  </div>
+  )
 }
