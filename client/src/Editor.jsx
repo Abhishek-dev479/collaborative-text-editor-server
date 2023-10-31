@@ -267,3 +267,7 @@ export default function Editor() {
   }, [])
   return <div className="container" ref={wrapperRef}></div>
 }
+
+function createBranch(){
+  console.log('branch');
+}
