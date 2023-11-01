@@ -4,7 +4,7 @@ import "quill/dist/quill.snow.css";
 import { io } from 'socket.io-client';
 import {useParams, useLocation} from 'react-router-dom';
 import Dialog from './Dialog';
-// import save from './save.png';
+import save from './save.png';
 // import Sidebar from './Sidebar';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { faBars } from '@fortawesome/free-solid-svg-icons'
@@ -190,7 +190,7 @@ export default function Editor() {
   const [quill, setQuill] = useState()
   let [dialog, setDialog] = useState([false, true]);
   let [url, setUrl] = useState('http://localhost:3000'+useLocation().pathname);
-
+  let [save, setSave] = useState(true);
 
   useEffect(() => {
     const s = io("http://localhost:3001")
@@ -207,7 +207,7 @@ export default function Editor() {
 
     socket.once("load-document", document => {
       quill.setContents(document)
-      quill.enable()
+      // quill.enable()
     })
 
     socket.emit("get-document", documentId)
@@ -215,20 +215,20 @@ export default function Editor() {
 
   useEffect(() => {
     if (socket == null || quill == null) return
-
-    const interval = setInterval(() => {
-      socket.emit("save-document", quill.getContents())
-    }, SAVE_INTERVAL_MS)
+    console.log('save button clicked again');
+    // const interval = setInterval(() => {
+    socket.emit("save-document", quill.getContents());
+    // }, SAVE_INTERVAL_MS)
 
     return () => {
-      clearInterval(interval)
+      // clearInterval(interval)
     }
-  }, [socket, quill])
+  }, [save])
 
   useEffect(() => {
     if (socket == null || quill == null) return
 
-    console.log('hello connected....');
+    // console.log('hello connected....');
     const handler = delta => {
       quill.updateContents(delta)
     }
@@ -263,11 +263,13 @@ export default function Editor() {
       theme: "snow",
       modules: { toolbar: TOOLBAR_OPTIONS },
     })
-    q.disable()
-    q.setText("Loading...")
+    // q.disable()
+    // q.setText("Loading...")
     setQuill(q)
 
     let k = document.getElementsByClassName('ql-toolbar')[0]; 
+    let img = createImage();
+    k.append(img);
     let button = createButton();
     k.append(button)
   }, [])
@@ -278,17 +280,47 @@ export default function Editor() {
     div.textContent = 'Share'
     div.setAttribute('id', 'but');
     div.addEventListener('click', () => {
+        console.log('save clicked');
         setDialog([true, true]);
-        // saveDocument();
+        saveDocument();
     })
     return div;
+  }
+
+  function saveDocument(){
+      // if(socket == null) console.log('still null');
+      console.log('saving docs.....');
+      // let content = quill.getContents();
+      // socket.emit('save-document', content);
+      // socket.on('save-new-document', () => {
+      //     setDialog([true, false]);
+      // })
+      setSave((prev)=>{
+        return !prev;
+      })
+      // console.log(save);
+  }
+
+  function createImage(){
+      console.log('save image created');
+      let img = document.createElement('img');
+      img.setAttribute('src', '/save.png');
+      img.setAttribute('id', 'img-save');
+      img.classList.add('ql-formats'); 
+      img.addEventListener('click', () => {
+          console.log('save image clicked');
+          saveDocument();
+      })
+      return img;
   }
 
   function removeDialog(){
     setDialog([false, true]);
   }
 
-  
+  useEffect(() => {
+    console.log(save);
+  }, [save]);
 
   return (
   <div id="container" ref={wrapperRef}>

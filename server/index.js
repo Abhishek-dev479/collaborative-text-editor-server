@@ -252,6 +252,7 @@ const defaultValue = ""
 
 io.on("connection", socket => {
   socket.on("get-document", async documentId => {
+    console.log('getting document from database using documentId');
     const document = await findOrCreateDocument(documentId)
     socket.join(documentId)
     socket.emit("load-document", document.data)
@@ -261,6 +262,7 @@ io.on("connection", socket => {
     })
 
     socket.on("save-document", async data => {
+      console.log('saving document');
       await Document.findByIdAndUpdate(documentId, { data })
     })
   })
