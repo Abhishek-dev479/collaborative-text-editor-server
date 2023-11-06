@@ -243,7 +243,7 @@ Document = mongoose.model('documents', documentSchema)
 
 const io = require("socket.io")(3001, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 })
