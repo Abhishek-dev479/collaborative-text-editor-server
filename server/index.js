@@ -229,7 +229,7 @@ const mongoose = require("mongoose")
 
 const { Schema, model } = require("mongoose")
 
-mongoose.connect("mongodb://localhost:27017/documentDB", {
+mongoose.connect("mongodb+srv://newUser_203:thisisapassword@cluster0.j51fwrw.mongodb.net/db-name?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
